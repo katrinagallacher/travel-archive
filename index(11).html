@@ -1,0 +1,132 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travel Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#e9eef0; --ink:#15242e; --ink-soft:#3f5560; --line:#b9c7cc; --line-soft:#cdd8db; --accent:#b5832a;
+  --cell-empty:#d6dfe1; --cell-stroke:rgba(21,36,46,.06);
+  --tip-bg:#15242e; --tip-text:#eef3f4; --tip-soft:#9fb4bc; --toggle-bg:rgba(255,255,255,.55);
+  --disp:'Space Grotesk',sans-serif; --mono:'IBM Plex Mono',monospace; --body:'Inter',sans-serif;
+}
+[data-theme="dark"]{
+  --paper:#0e171e; --ink:#e6eef2; --ink-soft:#8ba1ac; --line:#2b3b45; --line-soft:#1d2a32; --accent:#d8a23f;
+  --cell-empty:#1e2c35; --cell-stroke:rgba(255,255,255,.05);
+  --tip-bg:#22323c; --tip-text:#eef3f4; --tip-soft:#9fb4bc; --toggle-bg:rgba(255,255,255,.07);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;
+  transition:background-color .25s ease,color .25s ease}
+.wrap{max-width:1180px;margin:0 auto;padding:34px 22px 70px}
+.toggle{position:fixed;top:14px;right:14px;z-index:60;font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+  border:1px solid var(--line);background:var(--toggle-bg);color:var(--ink-soft);padding:7px 13px;border-radius:20px;
+  cursor:pointer;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);transition:.15s}
+.toggle:hover{color:var(--ink);border-color:var(--ink)}
+.masthead{border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:4px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);margin:0}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(32px,6vw,58px);line-height:.98;letter-spacing:-.02em;margin:6px 0 0}
+.stats{display:flex;flex-wrap:wrap;gap:26px;margin:18px 0 8px;font-family:var(--mono)}
+.stat b{font-family:var(--disp);font-weight:700;font-size:26px;display:block;line-height:1}
+.stat span{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:14px 0 26px}
+.lg{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11.5px;color:var(--ink-soft)}
+.lg i{width:11px;height:11px;border-radius:2px;display:inline-block}
+.year{margin-bottom:26px}
+.yhead{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:5px;margin-bottom:10px}
+.yhead b{font-family:var(--disp);font-weight:700;font-size:25px;line-height:1}
+.yhead span{font-family:var(--mono);font-size:11px;color:var(--ink-soft);letter-spacing:.03em}
+.cal{overflow-x:auto;padding-bottom:5px}
+.calgrid{--c:13px;--g:3px;display:grid;grid-template-areas:". months" "wd cells";grid-template-columns:auto max-content;gap:5px 7px;width:max-content}
+.months{grid-area:months;display:grid;column-gap:var(--g);font-family:var(--mono);font-size:10px;color:var(--ink-soft);height:12px}
+.months span{grid-row:1;white-space:nowrap}
+.wd{grid-area:wd;display:grid;grid-template-rows:repeat(7,var(--c));gap:var(--g);font-family:var(--mono);font-size:9px;color:var(--ink-soft)}
+.wd span{display:flex;align-items:center;height:var(--c);line-height:1}
+.cells{grid-area:cells;display:grid;grid-template-rows:repeat(7,var(--c));grid-auto-flow:column;grid-auto-columns:var(--c);gap:var(--g)}
+.cell{width:var(--c);height:var(--c);border-radius:2.5px;background:var(--cell-empty);box-shadow:inset 0 0 0 1px var(--cell-stroke)}
+.cell.t{cursor:pointer;opacity:0;animation:pop .35s forwards}
+.cell.t:hover{outline:1.5px solid var(--ink);outline-offset:1px}
+@keyframes pop{from{opacity:0;transform:scale(.35)}to{opacity:1;transform:none}}
+.tip{position:fixed;pointer-events:none;z-index:50;background:var(--tip-bg);color:var(--tip-text);font-family:var(--mono);
+  font-size:11.5px;line-height:1.5;padding:8px 11px;border-radius:6px;max-width:300px;opacity:0;transition:opacity .1s;box-shadow:0 6px 22px rgba(0,0,0,.3)}
+.tip b{font-family:var(--disp);font-size:12.5px;display:block;margin-bottom:1px}
+.tip i{color:var(--tip-soft);font-style:normal;display:block}
+.foot{margin-top:48px;border-top:1px solid var(--line);padding-top:14px;font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);letter-spacing:.04em}
+@media(max-width:600px){.calgrid{--c:11px;--g:2px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head>
+<body>
+<button class="toggle" id="toggle" aria-label="Toggle colour theme">Dark mode</button>
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Personal Travel Archive</p>
+    <h1>Every Day,<br>Coloured In</h1>
+  </header>
+  <div class="stats" id="stats"></div>
+  <div class="legend" id="legend"></div>
+  <div class="cal-area" id="cal"></div>
+  <div class="tip" id="tip"></div>
+  <p class="foot">Empty squares are days at home · colour = the region you were in that day · hover any day for the trip · shared boundary days keep the earlier trip.</p>
+</div>
+<script>
+const TRIPS=[{"s": "2011-12-24", "e": "2012-01-07", "t": "Pärnu, Tartu, Tallinn", "c": ["Estonia"], "r": "Baltics"}, {"s": "2012-07-20", "e": "2012-07-22", "t": "Riga", "c": ["Latvia"], "r": "Baltics"}, {"s": "2012-08-04", "e": "2012-08-17", "t": "Pärnu, Otepää, Tartu, Kuressaare, Tallinn", "c": ["Estonia"], "r": "Baltics"}, {"s": "2013-02-23", "e": "2013-03-01", "t": "Tallinn, Otepää, Võru", "c": ["Estonia"], "r": "Baltics"}, {"s": "2013-05-02", "e": "2013-05-11", "t": "Tallinn, Pärnu", "c": ["Estonia"], "r": "Baltics"}, {"s": "2014-04-26", "e": "2014-05-05", "t": "Firenze, Ravenna", "c": ["Italy"], "r": "Western & Central Europe"}, {"s": "2014-07-18", "e": "2014-07-19", "t": "Helsinki", "c": ["Finland"], "r": "Nordic"}, {"s": "2014-07-20", "e": "2014-07-21", "t": "Stockholm", "c": ["Sweden"], "r": "Nordic"}, {"s": "2014-07-31", "e": "2014-08-01", "t": "Käina", "c": ["Estonia"], "r": "Baltics"}, {"s": "2014-12-19", "e": "2014-12-27", "t": "Lisbon, Coimbra, Porto, Braga", "c": ["Portugal"], "r": "Western & Central Europe"}, {"s": "2015-05-01", "e": "2015-05-04", "t": "Vilnius", "c": ["Lithuania"], "r": "Baltics"}, {"s": "2015-07-17", "e": "2015-07-26", "t": "Reykjavik, Akureyri", "c": ["Iceland"], "r": "Nordic"}, {"s": "2015-08-08", "e": "2015-08-10", "t": "Kuressaare", "c": ["Estonia"], "r": "Baltics"}, {"s": "2016-01-22", "e": "2016-02-05", "t": "Tenerife, Los Cristianos, La Laguna, Sevilla, Cadiz, Barcelona", "c": ["Spain"], "r": "Western & Central Europe"}, {"s": "2016-06-11", "e": "2016-06-15", "t": "Paderborn, Hamburg", "c": ["Germany"], "r": "Western & Central Europe"}, {"s": "2016-06-23", "e": "2016-06-24", "t": "Kuressaare", "c": ["Estonia"], "r": "Baltics"}, {"s": "2016-07-01", "e": "2016-07-02", "t": "Helsinki", "c": ["Finland"], "r": "Nordic"}, {"s": "2016-07-08", "e": "2016-07-31", "t": "Oulu, Rovaniemi, Kuusamo", "c": ["Finland"], "r": "Nordic"}, {"s": "2016-08-05", "e": "2016-08-10", "t": "Kihnu, Ruhnu, Pärnu", "c": ["Estonia"], "r": "Baltics"}, {"s": "2016-08-17", "e": "2016-08-19", "t": "Riga", "c": ["Latvia"], "r": "Baltics"}, {"s": "2017-01-23", "e": "2017-02-03", "t": "Hong Kong, Macau", "c": ["Hong Kong", "Macau"], "r": "Asia"}, {"s": "2017-05-25", "e": "2017-05-29", "t": "Munich", "c": ["Germany"], "r": "Western & Central Europe"}, {"s": "2017-06-21", "e": "2017-06-22", "t": "Aegna", "c": ["Estonia"], "r": "Baltics"}, {"s": "2017-07-21", "e": "2017-07-30", "t": "Saint Petersburg, Yekaterinburg, Nizhny Tagil, Chelyabinsk, Moscow", "c": ["Russia"], "r": "Russia"}, {"s": "2017-08-10", "e": "2017-08-11", "t": "Viimsi, Paldiski", "c": ["Estonia"], "r": "Baltics"}, {"s": "2017-10-20", "e": "2017-10-22", "t": "Riga", "c": ["Latvia"], "r": "Baltics"}, {"s": "2017-12-22", "e": "2017-12-24", "t": "Minsk", "c": ["Belarus"], "r": "Eastern Europe"}, {"s": "2018-01-11", "e": "2018-01-18", "t": "Sliema, Mdina, Comino, Victoria, Valletta", "c": ["Malta"], "r": "Western & Central Europe"}, {"s": "2018-03-24", "e": "2018-03-24", "t": "Jõgeva", "c": ["Estonia"], "r": "Baltics"}, {"s": "2018-04-02", "e": "2018-04-06", "t": "Vilnius, Trakai", "c": ["Lithuania"], "r": "Baltics"}, {"s": "2018-04-12", "e": "2018-04-15", "t": "Yekaterinburg, Saint Petersburg, Moscow", "c": ["Russia"], "r": "Russia"}, {"s": "2018-06-01", "e": "2018-06-02", "t": "Helsinki", "c": ["Finland"], "r": "Nordic"}, {"s": "2018-07-20", "e": "2018-07-27", "t": "Varna, Nessebar", "c": ["Bulgaria"], "r": "Balkans"}, {"s": "2018-08-01", "e": "2018-08-09", "t": "Lisbon, Cascais, Faro, Lagos", "c": ["Portugal"], "r": "Western & Central Europe"}, {"s": "2018-08-22", "e": "2018-08-27", "t": "Vilnius, Kaunas", "c": ["Lithuania"], "r": "Baltics"}, {"s": "2018-12-14", "e": "2018-12-16", "t": "Stockholm", "c": ["Sweden"], "r": "Nordic"}, {"s": "2019-01-17", "e": "2019-01-19", "t": "Milano", "c": ["Italy"], "r": "Western & Central Europe"}, {"s": "2019-01-23", "e": "2019-01-25", "t": "Daugavpils", "c": ["Latvia"], "r": "Baltics"}, {"s": "2019-02-25", "e": "2019-02-27", "t": "Helsinki", "c": ["Finland"], "r": "Nordic"}, {"s": "2019-02-27", "e": "2019-03-03", "t": "Vienna, Baden", "c": ["Austria"], "r": "Western & Central Europe"}, {"s": "2019-05-15", "e": "2019-05-20", "t": "Brussels, Liege", "c": ["Belgium"], "r": "Western & Central Europe"}, {"s": "2019-05-20", "e": "2019-05-25", "t": "Copenhagen, Aarhus", "c": ["Denmark"], "r": "Nordic"}, {"s": "2019-07-19", "e": "2019-07-24", "t": "Riga, Jurmala", "c": ["Latvia"], "r": "Baltics"}, {"s": "2019-08-05", "e": "2019-08-07", "t": "Kuressaare", "c": ["Estonia"], "r": "Baltics"}, {"s": "2019-10-12", "e": "2019-10-13", "t": "Narva, Narva-Jõesuu", "c": ["Estonia"], "r": "Baltics"}, {"s": "2019-11-16", "e": "2019-11-17", "t": "Oslo", "c": ["Norway"], "r": "Nordic"}, {"s": "2019-12-28", "e": "2019-12-29", "t": "Kuressaare", "c": ["Estonia"], "r": "Baltics"}, {"s": "2020-01-07", "e": "2020-01-09", "t": "Riga", "c": ["Latvia"], "r": "Baltics"}, {"s": "2020-01-23", "e": "2020-01-26", "t": "Paphos", "c": ["Cyprus"], "r": "Middle East & Caucasus"}, {"s": "2020-06-19", "e": "2020-06-25", "t": "Nida, Palanga, Liepaja", "c": ["Lithuania", "Latvia"], "r": "Baltics"}, {"s": "2020-08-22", "e": "2020-08-23", "t": "Mariehamn", "c": ["Åland"], "r": "Nordic"}, {"s": "2020-08-28", "e": "2020-09-06", "t": "Irkutsk, Saint Petersburg", "c": ["Russia"], "r": "Russia"}, {"s": "2020-12-18", "e": "2021-01-03", "t": "Irkutsk", "c": ["Russia"], "r": "Russia"}, {"s": "2021-03-13", "e": "2021-04-03", "t": "Moscow", "c": ["Russia"], "r": "Russia"}, {"s": "2021-06-23", "e": "2021-06-24", "t": "Rakvere", "c": ["Estonia"], "r": "Baltics"}, {"s": "2021-07-10", "e": "2021-07-31", "t": "Saint Petersburg, Moscow", "c": ["Russia"], "r": "Russia"}, {"s": "2022-01-30", "e": "2022-02-05", "t": "Istanbul", "c": ["Türkiye"], "r": "Middle East & Caucasus"}, {"s": "2022-05-06", "e": "2022-05-08", "t": "Berlin", "c": ["Germany"], "r": "Western & Central Europe"}, {"s": "2022-05-22", "e": "2022-06-01", "t": "Paris, Beauvais", "c": ["France"], "r": "Western & Central Europe"}, {"s": "2022-06-23", "e": "2022-06-24", "t": "Laulasmaa", "c": ["Estonia"], "r": "Baltics"}, {"s": "2022-07-02", "e": "2022-07-11", "t": "Venice, Sofia", "c": ["Italy", "Bulgaria"], "r": "Western & Central Europe", "seg": [["2022-07-02", "Western & Central Europe", "Venice (Italy)"], ["2022-07-11", "Balkans", "Sofia (Bulgaria)"]]}, {"s": "2022-09-22", "e": "2022-10-08", "t": "Istanbul, Sofia, Varna", "c": ["Türkiye", "Bulgaria"], "r": "Middle East & Caucasus", "seg": [["2022-09-24", "Middle East & Caucasus", "Istanbul (Türkiye)"], ["2022-10-08", "Balkans", "Sofia, Varna (Bulgaria)"]]}, {"s": "2022-11-04", "e": "2022-11-06", "t": "Haapsalu", "c": ["Estonia"], "r": "Baltics"}, {"s": "2022-12-10", "e": "2023-01-06", "t": "Sofia", "c": ["Bulgaria"], "r": "Balkans"}, {"s": "2023-02-24", "e": "2023-03-10", "t": "Larnaca, Famagusta, Yerevan", "c": ["Cyprus", "Armenia"], "r": "Middle East & Caucasus"}, {"s": "2023-03-24", "e": "2023-03-26", "t": "Riga", "c": ["Latvia"], "r": "Baltics"}, {"s": "2023-04-29", "e": "2023-05-01", "t": "Bansko", "c": ["Bulgaria"], "r": "Balkans"}, {"s": "2023-06-23", "e": "2023-06-26", "t": "Prague", "c": ["Czech Republic"], "r": "Western & Central Europe"}, {"s": "2023-10-15", "e": "2023-10-17", "t": "Sofia", "c": ["Bulgaria"], "r": "Balkans"}, {"s": "2023-10-17", "e": "2023-10-18", "t": "Burgas", "c": ["Bulgaria"], "r": "Balkans"}, {"s": "2023-10-20", "e": "2023-10-22", "t": "Brasov", "c": ["Romania"], "r": "Balkans"}, {"s": "2023-11-26", "e": "2023-11-27", "t": "Helsinki", "c": ["Finland"], "r": "Nordic"}, {"s": "2023-12-09", "e": "2023-12-10", "t": "Plovdiv", "c": ["Bulgaria"], "r": "Balkans"}, {"s": "2024-01-06", "e": "2024-01-07", "t": "London", "c": ["United Kingdom"], "r": "Western & Central Europe"}, {"s": "2024-03-06", "e": "2024-03-11", "t": "Dubai", "c": ["UAE"], "r": "Middle East & Caucasus"}, {"s": "2024-06-22", "e": "2024-06-24", "t": "Visby", "c": ["Sweden"], "r": "Nordic"}, {"s": "2024-07-10", "e": "2024-07-14", "t": "Vienna", "c": ["Austria"], "r": "Western & Central Europe"}, {"s": "2024-08-17", "e": "2024-08-20", "t": "Warsaw, Poznań, Kraków", "c": ["Poland"], "r": "Western & Central Europe"}, {"s": "2024-10-19", "e": "2024-10-21", "t": "Dublin", "c": ["Ireland"], "r": "Western & Central Europe"}, {"s": "2024-11-02", "e": "2024-11-02", "t": "Helsinki", "c": ["Finland"], "r": "Nordic"}, {"s": "2024-11-23", "e": "2024-11-24", "t": "Riga", "c": ["Latvia"], "r": "Baltics"}, {"s": "2024-11-28", "e": "2024-12-03", "t": "Rome, Florence, Rimini + Vatican + San Marino", "c": ["Italy", "Vatican", "San Marino"], "r": "Western & Central Europe"}, {"s": "2024-12-14", "e": "2024-12-15", "t": "Helsinki", "c": ["Finland"], "r": "Nordic"}, {"s": "2025-01-10", "e": "2025-01-18", "t": "Med cruise: Savona, Marseille, Barcelona, Palma, Palermo", "c": ["Italy", "France", "Spain"], "r": "Western & Central Europe"}, {"s": "2025-01-18", "e": "2025-01-23", "t": "Singapore", "c": ["Singapore"], "r": "Asia"}, {"s": "2025-01-23", "e": "2025-01-26", "t": "Siem Reap", "c": ["Cambodia"], "r": "Asia"}, {"s": "2025-01-26", "e": "2025-02-01", "t": "Bangkok, Hua Hin", "c": ["Thailand"], "r": "Asia"}, {"s": "2025-02-01", "e": "2025-02-02", "t": "London", "c": ["United Kingdom"], "r": "Western & Central Europe"}, {"s": "2025-05-01", "e": "2025-05-04", "t": "Cēsis", "c": ["Latvia"], "r": "Baltics"}, {"s": "2025-05-21", "e": "2025-05-22", "t": "Lake Võrtsjärv (corporate)", "c": ["Estonia"], "r": "Baltics"}, {"s": "2025-06-21", "e": "2025-06-24", "t": "Åland Islands, Turku", "c": ["Finland"], "r": "Nordic"}, {"s": "2025-07-03", "e": "2025-07-05", "t": "Riga (corporate cruise)", "c": ["Latvia"], "r": "Baltics"}, {"s": "2025-07-23", "e": "2025-07-25", "t": "Oulu, Rovaniemi", "c": ["Finland"], "r": "Nordic"}, {"s": "2025-07-25", "e": "2025-08-04", "t": "Honningsvåg, Alta, Tromsø, Lofoten, Bodø, Mo i Rana", "c": ["Norway"], "r": "Nordic"}, {"s": "2025-08-04", "e": "2025-08-06", "t": "Umeå", "c": ["Sweden"], "r": "Nordic"}, {"s": "2025-08-06", "e": "2025-08-07", "t": "Tampere", "c": ["Finland"], "r": "Nordic"}, {"s": "2025-09-05", "e": "2025-09-07", "t": "Cēsis → Valmiera hike", "c": ["Latvia"], "r": "Baltics"}, {"s": "2025-10-18", "e": "2025-10-19", "t": "Alliklepa", "c": ["Estonia"], "r": "Baltics"}, {"s": "2025-10-31", "e": "2025-11-02", "t": "Riga", "c": ["Latvia"], "r": "Baltics"}, {"s": "2025-12-03", "e": "2025-12-07", "t": "Copenhagen", "c": ["Denmark"], "r": "Nordic"}, {"s": "2026-01-25", "e": "2026-02-01", "t": "Madeira", "c": ["Portugal"], "r": "Western & Central Europe"}, {"s": "2026-03-07", "e": "2026-03-08", "t": "Zürich, Chur, Vaduz", "c": ["Switzerland", "Liechtenstein"], "r": "Western & Central Europe"}, {"s": "2026-03-08", "e": "2026-03-14", "t": "Verona, Arabba, Corvara", "c": ["Italy"], "r": "Western & Central Europe"}, {"s": "2026-04-03", "e": "2026-04-05", "t": "Haapsalu, Vormsi", "c": ["Estonia"], "r": "Baltics"}, {"s": "2026-04-25", "e": "2026-04-26", "t": "Laulasmaa", "c": ["Estonia"], "r": "Baltics"}, {"s": "2026-04-30", "e": "2026-05-03", "t": "Kraków", "c": ["Poland"], "r": "Western & Central Europe"}, {"s": "2026-06-07", "e": "2026-06-10", "t": "Budapest, Burgas, Sunny Beach", "c": ["Hungary", "Bulgaria"], "r": "Western & Central Europe", "seg": [["2026-06-07", "Western & Central Europe", "Budapest (Hungary)"], ["2026-06-10", "Balkans", "Burgas, Sunny Beach (Bulgaria)"]]}, {"s": "2026-06-19", "e": "2026-06-24", "t": "Riga, Panevėžys, Kaunas, Palanga, Liepāja, Kuldīga, Saulkrasti", "c": ["Latvia", "Lithuania"], "r": "Baltics"}];const REGIONS=[["Baltics", "#1f7a78"], ["Nordic", "#2f6fb0"], ["Western & Central Europe", "#c8893a"], ["Balkans", "#b5523f"], ["Eastern Europe", "#566b7a"], ["Russia", "#7a5197"], ["Middle East & Caucasus", "#6f8f3f"], ["Asia", "#c0477b"]];const RC=Object.fromEntries(REGIONS);
+// theme
+const root=document.documentElement, tbtn=document.getElementById('toggle');
+function setTheme(t){root.setAttribute('data-theme',t);tbtn.textContent=(t==='dark'?'Light mode':'Dark mode');}
+setTheme(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+tbtn.onclick=()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark');
+
+function fmt(d){const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const x=new Date(d);return m[x.getMonth()]+' '+x.getDate();}
+function fmtRange(s,e){const a=new Date(s),b=new Date(e);const sameY=a.getFullYear()===b.getFullYear();if(s===e)return fmt(s)+', '+a.getFullYear();return fmt(s)+(sameY?'':' '+a.getFullYear())+' – '+fmt(e)+', '+b.getFullYear();}
+const countries=new Set();TRIPS.forEach(t=>t.c.forEach(c=>countries.add(c)));
+document.getElementById('stats').innerHTML=`<div class="stat"><b>${TRIPS.length}</b><span>Trips logged</span></div>
+<div class="stat"><b>${countries.size}</b><span>Countries & territories</span></div>
+<div class="stat"><b>2011–26</b><span>Years on the move</span></div>`;
+document.getElementById('legend').innerHTML=REGIONS.map(([n,c])=>`<span class="lg"><i style="background:${c}"></i>${n}</span>`).join('');
+
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const WD=['Mon','','Wed','','Fri','',''];
+const key=d=>d.toISOString().slice(0,10);
+function dayRegion(t,k){if(!t.seg)return{r:t.r,place:t.c.join(', ')+' · '+t.r};for(const s of t.seg){if(k<=s[0])return{r:s[1],place:s[2]};}const last=t.seg[t.seg.length-1];return{r:last[1],place:last[2]};}
+const dayMap={};
+TRIPS.forEach(t=>{let d=new Date(t.s+'T00:00:00');const end=new Date(t.e+'T00:00:00');while(d<=end){const k=key(d);if(!dayMap[k]){const dr=dayRegion(t,k);dayMap[k]={t,r:dr.r,place:dr.place};}d=new Date(d.getTime()+86400000);}});
+
+const cal=document.getElementById('cal'),tip=document.getElementById('tip');let order=0;
+for(let y=2011;y<=2026;y++){
+  const jan1=new Date(y,0,1),lead=(jan1.getDay()+6)%7;
+  const isLeap=(y%4===0&&y%100!==0)||y%400===0,dys=isLeap?366:365;
+  const total=lead+dys,weeks=Math.ceil(total/7),trail=weeks*7-total;
+  let daysAway=0;const tripSet=new Set();let cellsHTML='';
+  for(let i=0;i<lead;i++)cellsHTML+='<div class="cell"></div>';
+  for(let d=0;d<dys;d++){
+    const dt=new Date(y,0,1+d),k=key(dt),m=dayMap[k];
+    if(m){daysAway++;tripSet.add(m.t);
+      const info=`${m.t.t} || ${fmtRange(m.t.s,m.t.e)} · ${m.place}`;
+      cellsHTML+=`<div class="cell t" style="background:${RC[m.r]};animation-delay:${(order++ %600)*2}ms" data-info="${info.replace(/"/g,'&quot;')}" data-date="${MON[dt.getMonth()]} ${dt.getDate()}, ${y}"></div>`;
+    } else cellsHTML+=`<div class="cell" data-date="${MON[dt.getMonth()]} ${dt.getDate()}, ${y}"></div>`;
+  }
+  for(let i=0;i<trail;i++)cellsHTML+='<div class="cell"></div>';
+  let monthsHTML='';
+  for(let m=0;m<12;m++){const off=Math.round((new Date(y,m,1)-jan1)/86400000);const col=Math.floor((lead+off)/7)+1;monthsHTML+=`<span style="grid-column:${col}">${MON[m]}</span>`;}
+  const sec=document.createElement('section');sec.className='year';
+  sec.innerHTML=`<div class="yhead"><b>${y}</b><span>${tripSet.size} trip${tripSet.size!==1?'s':''} · ${daysAway} day${daysAway!==1?'s':''} away</span></div>
+  <div class="cal"><div class="calgrid">
+    <div class="months" style="grid-template-columns:repeat(${weeks},var(--c))">${monthsHTML}</div>
+    <div class="wd">${WD.map(w=>`<span>${w}</span>`).join('')}</div>
+    <div class="cells">${cellsHTML}</div>
+  </div></div>`;
+  cal.appendChild(sec);
+}
+cal.addEventListener('mousemove',ev=>{
+  const c=ev.target.closest('.cell');if(!c||!c.dataset.date){tip.style.opacity=0;return;}
+  if(c.dataset.info){const p=c.dataset.info.split(' || ');tip.innerHTML=`<b>${p[0]}</b><i>${p[1]}</i>`;}
+  else tip.innerHTML=`<i>${c.dataset.date} — at home</i>`;
+  tip.style.opacity=1;let x=ev.clientX+13,yv=ev.clientY+13;
+  if(x+310>innerWidth)x=ev.clientX-310;if(yv+64>innerHeight)yv=ev.clientY-64;
+  tip.style.left=x+'px';tip.style.top=yv+'px';
+});
+cal.addEventListener('mouseleave',()=>tip.style.opacity=0);
+</script></body></html>
